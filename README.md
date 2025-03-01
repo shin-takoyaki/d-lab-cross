@@ -17,7 +17,8 @@ Python（Flask）と React で構築されたイベントマッチング用の�
 - **Flask**: ウェブフレームワーク
 - **SQLAlchemy**: データベース操作用の ORM
 - **JWT**: JSON Web Tokens による認証
-- **SQLite**: データベース（PostgreSQL、MySQL などに簡単に変更可能）
+- **PostgreSQL**: データベース（デフォルト）
+- **SQLite**: 代替データベースオプション
 
 ### フロントエンド
 
@@ -41,7 +42,7 @@ Python（Flask）と React で構築されたイベントマッチング用の�
 
 2. 環境変数ファイルを作成する:
    ```
-   cp .env.example backend/.env
+   cp .env.example .env
    ```
    
 3. Docker Composeでアプリケーションを起動する:
@@ -51,7 +52,7 @@ Python（Flask）と React で構築されたイベントマッチング用の�
 
 4. アプリケーションにアクセスする:
    - フロントエンド: http://localhost:3000
-   - バックエンドAPI: http://localhost:5000
+   - バックエンドAPI: http://localhost:5010
 
 ### Dockerコンテナの管理
 
@@ -74,6 +75,16 @@ Python（Flask）と React で構築されたイベントマッチング用の�
   ```
   docker-compose down -v
   ```
+
+## PostgreSQLへの移行
+
+このプロジェクトはPostgreSQLをデフォルトのデータベースとして使用しています。移行スクリプトを使用して簡単にセットアップできます：
+
+```
+./migrate_to_postgres.sh
+```
+
+詳細な手順については、`POSTGRES_MIGRATION.md`ファイルを参照してください。
 
 ## 手動セットアップ（Docker不使用）
 
@@ -142,7 +153,7 @@ Python（Flask）と React で構築されたイベントマッチング用の�
 
 ## アクセス方法
 
-- バックエンド API: http://localhost:5000
+- バックエンド API: http://localhost:5010
 - フロントエンド: http://localhost:3000
 
 ## 主な API エンドポイント
@@ -161,4 +172,15 @@ Python（Flask）と React で構築されたイベントマッチング用の�
 開発環境では、バックエンドとフロントエンドが異なるポートで動作するため、
 バックエンドの CORS 設定が必要です。
 
-requirements.txt に以下を追加：
+### データベース設定
+PostgreSQLを使用する場合は、`.env`ファイルで適切な接続情報を設定してください：
+
+```
+DATABASE_URI=postgresql://username:password@localhost:5432/dbname
+```
+
+SQLiteを使用する場合は、以下のように設定します：
+
+```
+DATABASE_URI=sqlite:///event_matching.db
+```
