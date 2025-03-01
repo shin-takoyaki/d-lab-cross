@@ -129,14 +129,44 @@ def get_events():
     page = request.args.get('page', 1, type=int)
     per_page = 20  # Show 20 events per page as requested
     
-    # Get events with pagination
-    events = Event.query.order_by(Event.event_date.desc()).paginate(page=page, per_page=per_page)
+    # 検索クエリパラメータを取得
+    search_query = request.args.get('q', '')
+    category = request.args.get('category', '')
+    
+    # クエリの作成
+    query = Event.query
+    
+    # 検索クエリがある場合、タイトル、説明、場所で検索
+    if search_query:
+        search_term = f"%{search_query}%"
+        query = query.filter(
+            db.or_(
+                Event.title.ilike(search_term),
+                Event.description.ilike(search_term),
+                Event.location.ilike(search_term)
+            )
+        )
+    
+    # カテゴリフィルターがある場合
+    if category:
+        query = query.filter(Event.category == category)
+    
+    # 日付順に並べ替え
+    query = query.order_by(Event.event_date.desc())
+    
+    # ページネーション
+    events = query.paginate(page=page, per_page=per_page)
+    
+    # 利用可能なカテゴリのリストを取得
+    categories = db.session.query(Event.category).distinct().filter(Event.category != None).all()
+    categories = [cat[0] for cat in categories if cat[0]]
     
     return jsonify({
         "events": events_schema.dump(events.items),
         "total": events.total,
         "pages": events.pages,
-        "current_page": events.page
+        "current_page": events.page,
+        "categories": categories
     }), 200
 
 @event_bp.route('/<int:event_id>', methods=['GET'])

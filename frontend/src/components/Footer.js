@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import React from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 const FooterContainer = styled.footer`
   background-color: var(--bg-secondary);
@@ -13,7 +13,7 @@ const FooterContent = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 2rem;
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
   }
@@ -37,7 +37,7 @@ const FooterLink = styled(Link)`
   margin-bottom: 0.5rem;
   text-decoration: none;
   transition: color 0.3s ease;
-  
+
   &:hover {
     color: var(--accent-primary);
   }
@@ -59,19 +59,19 @@ const Copyright = styled.div`
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  
+
   return (
     <FooterContainer>
       <div className="container">
         <FooterContent>
           <FooterSection>
-            <FooterTitle>イベントマッチ</FooterTitle>
+            <FooterTitle>D-Lab-Cross</FooterTitle>
             <FooterText>
               あなたの興味に合ったイベントを見つけて作成しましょう。
               同じ志を持つ人々とつながり、ネットワークを広げましょう。
             </FooterText>
           </FooterSection>
-          
+
           <FooterSection>
             <FooterTitle>クイックリンク</FooterTitle>
             <FooterLink to="/">ホーム</FooterLink>
@@ -79,21 +79,14 @@ const Footer = () => {
             <FooterLink to="/login">ログイン</FooterLink>
             <FooterLink to="/register">新規登録</FooterLink>
           </FooterSection>
-          
-          <FooterSection>
-            <FooterTitle>お問い合わせ</FooterTitle>
-            <FooterText>メール: info@eventmatch.com</FooterText>
-            <FooterText>電話: 03-1234-5678</FooterText>
-            <FooterText>住所: 〒100-0001 東京都千代田区1-1-1</FooterText>
-          </FooterSection>
         </FooterContent>
-        
+
         <Copyright>
-          &copy; {currentYear} イベントマッチ. All rights reserved.
+          &copy; {currentYear} D-Lab-Cross. All rights reserved.
         </Copyright>
       </div>
     </FooterContainer>
   );
 };
 
-export default Footer; 
+export default Footer;

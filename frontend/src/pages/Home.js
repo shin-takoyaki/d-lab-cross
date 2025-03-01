@@ -3,6 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import EventCard from '../components/EventCard';
 import Pagination from '../components/Pagination';
+import SearchBar from '../components/SearchBar';
 import Card from '../components/UI/Card';
 
 const HomeContainer = styled.div`
@@ -65,6 +66,12 @@ const NoEventsContainer = styled(Card)`
   margin: 2rem 0;
 `;
 
+const SearchResultsInfo = styled.div`
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  font-style: italic;
+`;
+
 const Home = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,6 +79,9 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalEvents, setTotalEvents] = useState(0);
+  const [categories, setCategories] = useState([]);
+  const [searchParams, setSearchParams] = useState({ q: '', category: '' });
+  const [isSearching, setIsSearching] = useState(false);
   
   useEffect(() => {
     const fetchEvents = async () => {
@@ -79,11 +89,21 @@ const Home = () => {
         setLoading(true);
         setError(null);
         
-        const response = await axios.get(`/api/events?page=${currentPage}`);
+        // 検索パラメータを含めたURLを構築
+        let url = `/api/events?page=${currentPage}`;
+        if (searchParams.q) {
+          url += `&q=${encodeURIComponent(searchParams.q)}`;
+        }
+        if (searchParams.category) {
+          url += `&category=${encodeURIComponent(searchParams.category)}`;
+        }
+        
+        const response = await axios.get(url);
         
         setEvents(response.data.events);
         setTotalPages(response.data.pages);
         setTotalEvents(response.data.total);
+        setCategories(response.data.categories || []);
       } catch (err) {
         setError('イベントの取得に失敗しました。後でもう一度お試しください。');
         console.error('イベント取得エラー:', err);
@@ -93,10 +113,33 @@ const Home = () => {
     };
     
     fetchEvents();
-  }, [currentPage]);
+  }, [currentPage, searchParams]);
   
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+  
+  const handleSearch = (params) => {
+    setSearchParams(params);
+    setCurrentPage(1); // 検索時は1ページ目に戻る
+    setIsSearching(params.q !== '' || params.category !== '');
+  };
+  
+  // 検索結果のメッセージを生成
+  const getSearchResultsMessage = () => {
+    if (!isSearching) return null;
+    
+    let message = `${totalEvents}件のイベントが見つかりました`;
+    
+    if (searchParams.q && searchParams.category) {
+      message += `（キーワード: "${searchParams.q}", カテゴリー: "${searchParams.category}"）`;
+    } else if (searchParams.q) {
+      message += `（キーワード: "${searchParams.q}"）`;
+    } else if (searchParams.category) {
+      message += `（カテゴリー: "${searchParams.category}"）`;
+    }
+    
+    return message;
   };
   
   return (
@@ -111,6 +154,17 @@ const Home = () => {
         </HeroSubtitle>
       </Hero>
       
+      <SearchBar 
+        onSearch={handleSearch} 
+        categories={categories}
+      />
+      
+      {isSearching && (
+        <SearchResultsInfo>
+          {getSearchResultsMessage()}
+        </SearchResultsInfo>
+      )}
+      
       {loading ? (
         <LoadingContainer>
           <h3>イベントを読み込み中...</h3>
@@ -122,7 +176,7 @@ const Home = () => {
       ) : events.length === 0 ? (
         <NoEventsContainer>
           <h3>イベントが見つかりませんでした</h3>
-          <p>最初のイベントを作成しましょう！</p>
+          <p>検索条件を変更するか、新しいイベントを作成してください。</p>
         </NoEventsContainer>
       ) : (
         <>
