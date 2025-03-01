@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # バックエンドサービス
+  backend:
+    build: ./backend
+    container_name: event-matching-backend
+    restart: always
+    environment:
+      - SECRET_KEY=your_secret_key_here
+      - DATABASE_URI=sqlite:///event_matching.db
+      - JWT_SECRET_KEY=your_jwt_secret_key_here
+      - FLASK_APP=run.py
+      - FLASK_ENV=production
+      - TZ=Asia/Tokyo
+      - LANG=ja_JP.UTF-8
+      - LC_ALL=ja_JP.UTF-8
+    volumes:
+      - backend-data:/app/instance
+    ports:
+      - "5000:5010"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5010/api/events"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    command: >
+      sh -c "flask db upgrade && 
+             python run.py"
+
+  # フロントエンドサービス
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: event-matching-frontend
+    restart: always
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - TZ=Asia/Tokyo
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# 永続化ボリューム
+volumes:
+  backend-data:
+    name: event-matching-db-data 

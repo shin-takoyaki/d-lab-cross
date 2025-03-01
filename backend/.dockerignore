@@ -1,0 +1,50 @@
+# Pythonの一時ファイル
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 仮想環境
+venv/
+ENV/
+
+# IDE設定ファイル
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ログファイル
+logs/
+*.log
+
+# ローカル開発用ファイル
+.env.local
+.env.development
+.env.test
+.env.production
+
+# SQLiteデータベースファイル
+*.db
+*.sqlite3
+
+# バックアップファイル
+*.bak
+*.backup
+*~
