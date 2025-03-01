@@ -79,6 +79,37 @@ const TextArea = styled.textarea`
   }
 `;
 
+const Select = styled.select`
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: none;
+  outline: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 
+    inset 4px 4px 8px var(--shadow-color-strong),
+    inset -4px -4px 8px var(--shadow-color);
+  
+  &:focus {
+    box-shadow: 
+      inset 6px 6px 10px var(--shadow-color-strong),
+      inset -6px -6px 10px var(--shadow-color);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  option {
+    background-color: var(--bg-tertiary);
+  }
+`;
+
 const ErrorMessage = styled.p`
   color: var(--error);
   font-size: 0.875rem;
@@ -88,7 +119,8 @@ const ErrorMessage = styled.p`
 const Input = ({ 
   label, 
   type = 'text', 
-  error, 
+  error,
+  options = [],
   ...props 
 }) => {
   return (
@@ -97,6 +129,14 @@ const Input = ({
       
       {type === 'textarea' ? (
         <TextArea {...props} />
+      ) : type === 'select' ? (
+        <Select {...props}>
+          {options.map((option, index) => (
+            <option key={index} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </Select>
       ) : (
         <StyledInput type={type} {...props} />
       )}

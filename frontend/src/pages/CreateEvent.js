@@ -87,18 +87,7 @@ const CreateEvent = () => {
     }
     
     if (!formData.event_date) {
-      newErrors.event_date = 'イベント日時は必須です';
-    } else {
-      const eventDate = new Date(formData.event_date);
-      const now = new Date();
-      
-      if (eventDate < now) {
-        newErrors.event_date = 'イベント日時は過去の日付にできません';
-      }
-    }
-    
-    if (formData.capacity && isNaN(Number(formData.capacity))) {
-      newErrors.capacity = '定員は数字で入力してください';
+      newErrors.event_date = '日付は必須です';
     }
     
     setErrors(newErrors);
@@ -116,19 +105,18 @@ const CreateEvent = () => {
       setIsSubmitting(true);
       setError(null);
       
-      // Format data for API
+      // 数値フィールドの変換
       const eventData = {
         ...formData,
-        capacity: formData.capacity ? Number(formData.capacity) : null
+        capacity: formData.capacity ? parseInt(formData.capacity) : null
       };
       
       const response = await axios.post('/api/events', eventData);
       
-      // Redirect to the new event page
       navigate(`/events/${response.data.event.id}`);
     } catch (err) {
+      setError(err.response?.data?.error || 'イベントの作成に失敗しました');
       console.error('イベント作成エラー:', err);
-      setError(err.response?.data?.error || 'イベントの作成に失敗しました。もう一度お試しください。');
     } finally {
       setIsSubmitting(false);
     }
@@ -138,8 +126,19 @@ const CreateEvent = () => {
     navigate('/');
   };
   
-  // Get today's date in YYYY-MM-DD format for min date
-  const today = new Date().toISOString().split('T')[0];
+  // 定義済みカテゴリのリスト
+  const predefinedCategories = [
+    'ビジネス',
+    'テクノロジー',
+    'スポーツ',
+    '音楽',
+    'アート',
+    '料理',
+    '教育',
+    '健康',
+    '旅行',
+    'その他'
+  ];
   
   return (
     <CreateEventContainer>
@@ -150,42 +149,41 @@ const CreateEvent = () => {
           {error && <ErrorMessage>{error}</ErrorMessage>}
           
           <form onSubmit={handleSubmit}>
-            <Input
+            <Input 
               label="イベントタイトル"
               type="text"
               name="title"
-              placeholder="イベントタイトルを入力"
               value={formData.title}
               onChange={handleChange}
+              placeholder="イベントのタイトルを入力してください"
               error={errors.title}
             />
             
-            <Input
+            <Input 
               label="説明"
               type="textarea"
               name="description"
-              placeholder="イベントの説明を入力"
               value={formData.description}
               onChange={handleChange}
+              placeholder="イベントの詳細な説明を入力してください"
               error={errors.description}
             />
             
             <FormGroup>
-              <Input
+              <Input 
                 label="場所"
                 type="text"
                 name="location"
-                placeholder="イベントの開催場所"
                 value={formData.location}
                 onChange={handleChange}
+                placeholder="イベントの開催場所"
                 error={errors.location}
               />
               
-              <Input
-                label="イベント日時"
+              <Input 
+                label="開催日時"
                 type="datetime-local"
                 name="event_date"
-                min={today}
                 value={formData.event_date}
                 onChange={handleChange}
                 error={errors.event_date}
@@ -193,36 +191,38 @@ const CreateEvent = () => {
             </FormGroup>
             
             <FormGroup>
-              <Input
-                label="カテゴリー（任意）"
-                type="text"
+              <Input 
+                label="カテゴリー"
+                type="select"
                 name="category"
-                placeholder="例：音楽、スポーツ、テクノロジー"
                 value={formData.category}
                 onChange={handleChange}
                 error={errors.category}
+                options={[
+                  { value: '', label: 'カテゴリーを選択' },
+                  ...predefinedCategories.map(cat => ({ value: cat, label: cat }))
+                ]}
               />
               
-              <Input
+              <Input 
                 label="定員（任意）"
                 type="number"
                 name="capacity"
-                placeholder="参加者の最大数"
                 value={formData.capacity}
                 onChange={handleChange}
+                placeholder="定員がある場合は入力してください"
                 error={errors.capacity}
               />
             </FormGroup>
             
             <ButtonGroup>
               <Button 
-                variant="secondary" 
                 type="button" 
+                variant="secondary" 
                 onClick={handleCancel}
               >
                 キャンセル
               </Button>
-              
               <Button 
                 type="submit" 
                 disabled={isSubmitting}

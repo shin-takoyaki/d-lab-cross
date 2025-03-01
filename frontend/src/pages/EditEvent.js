@@ -5,6 +5,7 @@ import axios from 'axios';
 import Card from '../components/UI/Card';
 import Input from '../components/UI/Input';
 import Button from '../components/UI/Button';
+import { Link } from 'react-router-dom';
 
 const EditEventContainer = styled.div`
   padding: 2rem 0;
@@ -48,6 +49,13 @@ const ErrorMessage = styled.div`
 `;
 
 const LoadingContainer = styled(Card)`
+  padding: 2rem;
+  text-align: center;
+  margin: 2rem auto;
+  max-width: 600px;
+`;
+
+const ErrorContainer = styled.div`
   padding: 2rem;
   text-align: center;
   margin: 2rem auto;
@@ -179,11 +187,37 @@ const EditEvent = () => {
     navigate(`/events/${id}`);
   };
   
+  // 定義済みカテゴリのリスト
+  const predefinedCategories = [
+    'ビジネス',
+    'テクノロジー',
+    'スポーツ',
+    '音楽',
+    'アート',
+    '料理',
+    '教育',
+    '健康',
+    '旅行',
+    'その他'
+  ];
+  
   if (loading) {
     return (
       <LoadingContainer>
-        <h2>イベント詳細を読み込み中...</h2>
+        <h2>イベント情報を読み込み中...</h2>
       </LoadingContainer>
+    );
+  }
+  
+  if (error) {
+    return (
+      <ErrorContainer>
+        <h2>エラーが発生しました</h2>
+        <p>{error}</p>
+        <Button as={Link} to="/" variant="secondary">
+          ホームに戻る
+        </Button>
+      </ErrorContainer>
     );
   }
   
@@ -243,13 +277,16 @@ const EditEvent = () => {
             
             <FormGroup>
               <Input
-                label="カテゴリー（任意）"
-                type="text"
+                label="カテゴリー"
+                type="select"
                 name="category"
-                placeholder="例：音楽、スポーツ、テクノロジー"
-                value={formData.category}
+                value={formData.category || ''}
                 onChange={handleChange}
                 error={errors.category}
+                options={[
+                  { value: '', label: 'カテゴリーを選択' },
+                  ...predefinedCategories.map(cat => ({ value: cat, label: cat }))
+                ]}
               />
               
               <Input
@@ -257,7 +294,7 @@ const EditEvent = () => {
                 type="number"
                 name="capacity"
                 placeholder="参加者の最大数"
-                value={formData.capacity}
+                value={formData.capacity || ''}
                 onChange={handleChange}
                 error={errors.capacity}
               />
@@ -276,7 +313,7 @@ const EditEvent = () => {
                 type="submit" 
                 disabled={isSubmitting}
               >
-                {isSubmitting ? '更新中...' : '更新する'}
+                {isSubmitting ? '更新中...' : '変更を保存'}
               </Button>
             </ButtonGroup>
           </form>

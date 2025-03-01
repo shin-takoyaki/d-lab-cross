@@ -100,7 +100,7 @@ const Navbar = () => {
       <div className="container">
         <NavbarContent>
           <Logo to="/">
-            イベント<span>マッチ</span>
+            D-Lab-Cross
           </Logo>
           
           <MobileMenuButton onClick={toggleMenu}>
