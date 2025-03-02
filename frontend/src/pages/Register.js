@@ -126,7 +126,7 @@ const Register = () => {
         <Card.Body>
           <RegisterHeader>
             <RegisterTitle>アカウント作成</RegisterTitle>
-            <RegisterSubtitle>D-Lab-Crossコミュニティに参加しましょう</RegisterSubtitle>
+            <RegisterSubtitle>D-Crossコミュニティに参加しましょう</RegisterSubtitle>
           </RegisterHeader>
           
           {authError && (

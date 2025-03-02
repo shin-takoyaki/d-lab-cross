@@ -3,6 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
 import Button from './UI/Button';
+import { FaHome } from 'react-icons/fa';
+import { FaCalendarPlus } from 'react-icons/fa';
+import { FaSignOutAlt } from 'react-icons/fa';
+import { FaUser } from 'react-icons/fa';
+import { FaSignInAlt } from 'react-icons/fa';
+import { FaUserPlus } from 'react-icons/fa';
 
 const NavbarContainer = styled.header`
   background-color: var(--bg-secondary);
@@ -23,6 +29,7 @@ const Logo = styled(Link)`
   text-decoration: none;
   display: flex;
   align-items: center;
+  gap: 0.5rem;
   
   span {
     color: var(--accent-primary);
@@ -53,6 +60,9 @@ const NavLink = styled(Link)`
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   
   &:hover {
     color: var(--accent-primary);
@@ -100,7 +110,7 @@ const Navbar = () => {
       <div className="container">
         <NavbarContent>
           <Logo to="/">
-            D-Lab-Cross
+            D-Cross
           </Logo>
           
           <MobileMenuButton onClick={toggleMenu}>
@@ -108,22 +118,22 @@ const Navbar = () => {
           </MobileMenuButton>
           
           <NavLinks isOpen={isMenuOpen}>
-            <NavLink to="/">ホーム</NavLink>
+            <NavLink to="/"><FaHome /> ホーム</NavLink>
             
             {isAuthenticated ? (
               <>
-                <NavLink to="/events/create">イベント作成</NavLink>
+                <NavLink to="/events/create"><FaCalendarPlus /> イベント作成</NavLink>
                 <ButtonGroup>
                   <Button 
                     variant="text" 
                     onClick={handleLogout}
                   >
-                    ログアウト
+                    <FaSignOutAlt style={{ marginRight: '0.5rem' }} /> ログアウト
                   </Button>
                   <Button 
                     variant="secondary"
                   >
-                    {currentUser?.username}
+                    <FaUser style={{ marginRight: '0.5rem' }} /> {currentUser?.username}
                   </Button>
                 </ButtonGroup>
               </>
@@ -134,14 +144,14 @@ const Navbar = () => {
                   as={Link} 
                   to="/login"
                 >
-                  ログイン
+                  <FaSignInAlt style={{ marginRight: '0.5rem' }} /> ログイン
                 </Button>
                 <Button 
                   variant="primary" 
                   as={Link} 
                   to="/register"
                 >
-                  新規登録
+                  <FaUserPlus style={{ marginRight: '0.5rem' }} /> 新規登録
                 </Button>
               </ButtonGroup>
             )}

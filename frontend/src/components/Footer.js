@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { FaDiscord } from 'react-icons/fa';
 
 const FooterContainer = styled.footer`
   background-color: var(--bg-secondary);
@@ -49,6 +50,20 @@ const FooterText = styled.p`
   line-height: 1.6;
 `;
 
+const ExternalLink = styled.a`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: var(--accent-primary);
+  }
+`;
+
 const Copyright = styled.div`
   margin-top: 2rem;
   padding-top: 1rem;
@@ -65,7 +80,7 @@ const Footer = () => {
       <div className="container">
         <FooterContent>
           <FooterSection>
-            <FooterTitle>D-Lab-Cross</FooterTitle>
+            <FooterTitle>D-Cross</FooterTitle>
             <FooterText>
               あなたの興味に合ったイベントを見つけて作成しましょう。
               同じ志を持つ人々とつながり、ネットワークを広げましょう。
@@ -79,10 +94,20 @@ const Footer = () => {
             <FooterLink to="/login">ログイン</FooterLink>
             <FooterLink to="/register">新規登録</FooterLink>
           </FooterSection>
+
+          <FooterSection>
+            <FooterTitle>お問い合わせ</FooterTitle>
+            <ExternalLink href="https://discord.gg/yrYWwwgS" target="_blank" rel="noopener noreferrer">
+              <FaDiscord /> Discordでお問い合わせ
+            </ExternalLink>
+            <FooterText>
+              ご質問やご意見がございましたら、Discordチャンネルにてお気軽にお問い合わせください。
+            </FooterText>
+          </FooterSection>
         </FooterContent>
 
         <Copyright>
-          &copy; {currentYear} D-Lab-Cross. All rights reserved.
+          &copy; {currentYear} D-Cross. All rights reserved.
         </Copyright>
       </div>
     </FooterContainer>
