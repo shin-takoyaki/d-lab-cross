@@ -79,7 +79,8 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalEvents, setTotalEvents] = useState(0);
-  const [categories, setCategories] = useState([]);
+  const defaultCategories = ["AI", "男女関係", "お金", "ワイン", "勉強", "仕事", "料理", "人間関係", "メンタル改善", "月末", "健康", "自分を変える"];
+  const [categories, setCategories] = useState(defaultCategories);
   const [searchParams, setSearchParams] = useState({ q: '', category: '' });
   const [isSearching, setIsSearching] = useState(false);
   
@@ -103,7 +104,7 @@ const Home = () => {
         setEvents(response.data.events);
         setTotalPages(response.data.pages);
         setTotalEvents(response.data.total);
-        setCategories(response.data.categories || []);
+        setCategories((response.data.categories && response.data.categories.length > 0) ? response.data.categories : defaultCategories);
       } catch (err) {
         setError('イベントの取得に失敗しました。後でもう一度お試しください。');
         console.error('イベント取得エラー:', err);

@@ -63,9 +63,9 @@ const LoginLink = styled.div`
 
 const Register = () => {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [termsAgreement, setTermsAgreement] = useState(false);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -81,12 +81,6 @@ const Register = () => {
       newErrors.username = 'ユーザー名は3文字以上必要です';
     }
     
-    if (!email.trim()) {
-      newErrors.email = 'メールアドレスは必須です';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'メールアドレスの形式が正しくありません';
-    }
-    
     if (!password) {
       newErrors.password = 'パスワードは必須です';
     } else if (password.length < 6) {
@@ -95,6 +89,10 @@ const Register = () => {
     
     if (password !== confirmPassword) {
       newErrors.confirmPassword = 'パスワードが一致しません';
+    }
+    
+    if (!termsAgreement) {
+      newErrors.termsAgreement = '利用規約に同意してください';
     }
     
     setErrors(newErrors);
@@ -110,7 +108,7 @@ const Register = () => {
     
     try {
       setIsSubmitting(true);
-      await register(username, email, password);
+      await register(username, password);
       navigate('/');
     } catch (error) {
       console.error('登録エラー:', error);
@@ -144,15 +142,6 @@ const Register = () => {
             />
             
             <Input
-              label="メールアドレス"
-              type="email"
-              placeholder="メールアドレスを入力"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={errors.email}
-            />
-            
-            <Input
               label="パスワード"
               type="password"
               placeholder="パスワードを作成"
@@ -169,6 +158,25 @@ const Register = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               error={errors.confirmPassword}
             />
+            
+            <div style={{ margin: '1rem 0' }}>
+              <label style={{ display: 'flex', alignItems: 'center' }}>
+                <input
+                  type="checkbox"
+                  checked={termsAgreement}
+                  onChange={(e) => setTermsAgreement(e.target.checked)}
+                  style={{ marginRight: '0.5rem' }}
+                />
+                <span>
+                  利用規約に同意する（<Link to="/terms" target="_blank" rel="noreferrer">利用規約</Link>）
+                </span>
+              </label>
+              {errors.termsAgreement && (
+                <div style={{ color: 'var(--error)', fontSize: '0.875rem', marginTop: '0.5rem' }}>
+                  {errors.termsAgreement}
+                </div>
+              )}
+            </div>
             
             <Button 
               type="submit" 

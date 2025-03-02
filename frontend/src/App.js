@@ -11,6 +11,7 @@ import EventDetail from './pages/EventDetail';
 import CreateEvent from './pages/CreateEvent';
 import EditEvent from './pages/EditEvent';
 import NotFound from './pages/NotFound';
+import Terms from './pages/Terms';
 
 // Components
 import Navbar from './components/Navbar';
@@ -48,6 +49,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="/events/:id" element={<EventDetail />} />
             <Route 
               path="/events/create" 

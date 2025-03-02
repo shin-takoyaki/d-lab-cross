@@ -26,14 +26,13 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const register = async (username, email, password) => {
+  const register = async (username, password) => {
     try {
       setError(null);
       setLoading(true);
       
       const response = await axios.post('/api/auth/register', {
         username,
-        email,
         password
       });
       
